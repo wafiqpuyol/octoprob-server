@@ -1,11 +1,9 @@
-import express from "express";
 
-const app = express();
+import { SingletonServer } from "@app/server/server"
 
-app.get("/", (_, res) => {
-    res.send("Hello World!");
-});
 
-app.listen(3000, () => {
-    console.log("Example app listening on port 3000!");
-})
+const init = (): void => {
+    SingletonServer.getInstance().start();
+}
+
+init();
