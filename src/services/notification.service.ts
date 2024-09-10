@@ -51,7 +51,7 @@ export const getAllNotificationGroupByUserId = async (userId: number) => {
 
 export const updateNotificationGroup = async (notificationId: number, payload: INotificationDocument) => {
     try {
-        const user = await prisma.user.update({
+        const user = await prisma.notifications.update({
             where: {
                 id: notificationId
             },
