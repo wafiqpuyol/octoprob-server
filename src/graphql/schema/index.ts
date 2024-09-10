@@ -1,8 +1,4 @@
-export const dummySchema = (`#graphql
-    type User {
-        id:String
-    }
-    type Query {
-        allUser:[User]
-    }
-`)
+import { mergeTypeDefs } from '@graphql-tools/merge';
+import { userSchema } from "./user"
+
+export const mergedSchema = mergeTypeDefs([userSchema])

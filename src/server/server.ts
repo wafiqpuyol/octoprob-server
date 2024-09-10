@@ -5,7 +5,9 @@ import { ApolloServerPluginLandingPageDisabled } from "@apollo/server/plugin/dis
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 import { resolvers } from "@app/graphql/resolver";
-import { dummySchema } from "@app/graphql/schema";
+import { mergedSchema } from "@app/graphql/schema";
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { GraphQLSchema } from 'graphql';
 import { AppContext } from "@app/interfaces/app.interface";
 import cookieSession from 'cookie-session';
 import cors from "cors";
@@ -23,9 +25,9 @@ export class SingletonServer {
     private constructor(app: Express) {
         this.app = app;
         this.httpServer = new http.Server(app);
-        const schema = { typeDefs: dummySchema, resolvers };
+        const schema: GraphQLSchema = makeExecutableSchema({ typeDefs: mergedSchema, resolvers });
         this.gqlServer = new ApolloServer<AppContext | BaseContext>({
-            ...schema,
+            schema,
             introspection: config.NODE_ENV !== 'production',
             plugins: [
                 ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
