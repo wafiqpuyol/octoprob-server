@@ -67,7 +67,7 @@ export const updateNotificationGroup = async (notificationId: number, payload: I
 
 export const deleteNotificationGroup = async (notificationId: number) => {
     try {
-        await prisma.user.delete({
+        await prisma.notifications.delete({
             where: {
                 id: notificationId
             }
