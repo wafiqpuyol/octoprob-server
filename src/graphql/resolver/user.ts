@@ -57,14 +57,14 @@ export const userResolver = {
             }
             const { email, password } = validatedLoginDetails.data;
             const checkIfUserExist = await getUserByEmail(email);
-            console.log(checkIfUserExist)
             if (!checkIfUserExist) {
                 throw new GraphQLError(`User doesn't exists with this Username`);
             }
-            if (checkIfUserExist.password) {
-                const isPasswordMatch = await compare(password, checkIfUserExist.password);
-                if (!isPasswordMatch) throw new GraphQLError("Invalid Credentials");
+            if (!checkIfUserExist.password) {
+                throw new GraphQLError(`Email or Password is incorrect`);
             }
+            const isPasswordMatch = await compare(password, checkIfUserExist.password);
+            if (!isPasswordMatch) throw new GraphQLError("Email or Password is incorrect");
 
             const userJwt: string = jwt.sign(
                 {
