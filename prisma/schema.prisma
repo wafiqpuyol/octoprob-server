@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id
+  username   String   @unique
+  password   String?
+  googleId   String?
+  facebookId String?
+  email      String   @unique
+  createdAt  DateTime @default(now())
+  Notifications      Notifications[]
+
+  @@index([username, email])
+}
+
+model Notifications {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  groupName String
+  emails    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}

@@ -1,0 +1,1 @@
+export { User, Notifications, PrismaClient } from "@prisma/client"
