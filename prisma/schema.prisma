@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id         Int      @id
-  username   String   @unique
-  password   String?
-  googleId   String?
-  facebookId String?
-  email      String   @unique
-  createdAt  DateTime @default(now())
-  Notifications      Notifications[]
+  id            Int             @id
+  username      String          @unique
+  password      String?
+  googleId      String?
+  facebookId    String?
+  email         String          @unique
+  createdAt     DateTime        @default(now())
+  Notifications Notifications[]
+  Monitor       Monitor[]
 
   @@index([username, email])
 }
@@ -30,3 +31,36 @@ model Notifications {
 
   @@index([userId])
 }
+
+model Monitor {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  notificationId Int
+  name           String
+  active         Boolean   @default(true)
+  status         Int
+  frequency      Int       @default(30)
+  alertThreshold Int       @default(1)
+  url            String
+  type           String
+  lastChanged    DateTime?
+  timeout        Int       @default(10)
+  uptime         Int       @default(0)
+  redirects      Int       @default(0)
+  method         String?
+  headers        String?
+  body           String?
+  httpAuthMethod String?
+  basicAuthUser  String?
+  basicAuthPass  String?
+  bearerToken    String?
+  contentType    String?
+  statusCode     String?
+  responseTime   String?
+  connection     String?
+  port           Int?
+  user           User      @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  @@index([userId])
+}
+
