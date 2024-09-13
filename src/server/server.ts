@@ -15,6 +15,14 @@ import type { Express, NextFunction, Request, Response } from "express";
 import express, { json, urlencoded } from "express";
 import http from 'http';
 import { config } from "./config";
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import customFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(customFormat)
 
 export class SingletonServer {
     private static instance: SingletonServer;
@@ -99,7 +107,7 @@ export class SingletonServer {
 
     private healthRoute(app: Express): void {
         app.get('/health', (_req: Request, res: Response) => {
-            res.status(200).send("<h1>Uptimer monitor service is healthy and OK.</h1>");
+            res.status(200).send("<h1> Octoprob monitor service is healthy and OK.</h1>");
         });
     }
 
