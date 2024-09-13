@@ -89,7 +89,7 @@ export const startSingleJob = (name: string, timezone: string, type: number, job
 };
 
 export const stopSingleBackgroundJob = (name: string, monitorId?: number): void => {
-    const scheduled: Cron | undefined = scheduledJobs.find(job => (job.name) === toLower(name));
+    const scheduled: Cron | undefined = scheduledJobs.find(job => toLower(job.name) === toLower(name));
     if (scheduled) {
         scheduled.stop();
         if (monitorId) {
