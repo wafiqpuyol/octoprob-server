@@ -38,7 +38,7 @@ model Monitor {
   notificationId Int
   name           String
   active         Boolean   @default(true)
-  status         Int
+  status         Int?
   frequency      Int       @default(30)
   alertThreshold Int       @default(1)
   url            String
@@ -64,3 +64,18 @@ model Monitor {
   @@index([userId])
 }
 
+model HttpHeartbeat {
+  id           Int      @id @default(autoincrement())
+  monitorId    Int      
+  status       Int
+  code         Int      @default(0)
+  message      String?
+  timestamp    BigInt
+  reqHeaders   String?
+  resHeaders   String?
+  reqBody      String?
+  resBody      String?
+  responseTime Int      @default(0)
+
+  @@index([monitorId])
+}
