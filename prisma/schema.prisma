@@ -106,3 +106,16 @@ model RedisHeartbeat {
 
   @@index([monitorId])
 }
+
+model TCPHeartbeat {
+  id           Int     @id @default(autoincrement())
+  monitorId    Int
+  status       Int
+  code         Int     @default(0)
+  message      String?
+  timestamp    BigInt
+  responseTime Int     @default(0)
+  connection   String?
+
+  @@index([monitorId])
+}
