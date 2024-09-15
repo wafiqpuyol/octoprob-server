@@ -60,22 +60,49 @@ model Monitor {
   connection     String?
   port           Int?
   user           User      @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
+  createdAt      DateTime  @default(now())
+
   @@index([userId])
 }
 
 model HttpHeartbeat {
-  id           Int      @id @default(autoincrement())
-  monitorId    Int      
+  id           Int     @id @default(autoincrement())
+  monitorId    Int
   status       Int
-  code         Int      @default(0)
+  code         Int     @default(0)
   message      String?
   timestamp    BigInt
   reqHeaders   String?
   resHeaders   String?
   reqBody      String?
   resBody      String?
-  responseTime Int      @default(0)
+  responseTime Int     @default(0)
+
+  @@index([monitorId])
+}
+
+model MongoDBHeartbeat {
+  id           Int     @id @default(autoincrement())
+  monitorId    Int
+  status       Int
+  code         Int     @default(0)
+  message      String?
+  timestamp    BigInt
+  responseTime Int     @default(0)
+  connection   String?
+
+  @@index([monitorId])
+}
+
+model RedisHeartbeat {
+  id           Int     @id @default(autoincrement())
+  monitorId    Int
+  status       Int
+  code         Int     @default(0)
+  message      String?
+  timestamp    BigInt
+  responseTime Int     @default(0)
+  connection   String?
 
   @@index([monitorId])
 }
