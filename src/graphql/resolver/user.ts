@@ -30,6 +30,7 @@ export const userResolver = {
     },
     Mutation: {
         async registerUser(_: undefined, args: { user: IUserDocument }) {
+            console.log(args.user);
             const { user } = args
             const validatedRegistrationDetails = RegisterSchema().safeParse(user);
             if (!validatedRegistrationDetails.success) {
@@ -58,7 +59,7 @@ export const userResolver = {
             const { email, password } = validatedLoginDetails.data;
             const checkIfUserExist = await getUserByEmail(email);
             if (!checkIfUserExist) {
-                throw new GraphQLError(`User doesn't exists with this Username`);
+                throw new GraphQLError(`User doesn't exists with this Email`);
             }
             if (!checkIfUserExist.password) {
                 throw new GraphQLError(`Email or Password is incorrect`);
@@ -93,17 +94,18 @@ export const userResolver = {
         async authSocialUser(_: undefined, args: { user: IUserDocument }, contextValue: AppContext) {
             const { req } = contextValue;
             const { user } = args;
+            console.log(user);
             const validatedRegistrationDetails = SocialAuth().safeParse(user);
             if (!validatedRegistrationDetails.success) {
                 console.log(validatedRegistrationDetails.error.format());
                 const format = validatedRegistrationDetails.error.format();
-                const errorMessage = (format.username?._errors || format.socialId?._errors || format.type?._errors) as string[]
+                const errorMessage = (format.username?._errors || format.email?._errors || format.socialId?._errors || format.type?._errors) as string[]
                 throw new GraphQLError(errorMessage[0]);
             }
             const { email, username, socialId } = validatedRegistrationDetails.data
             const facebookId = (user.type === "facebook") ? socialId : undefined
             const googleId = (user.type === "google") ? socialId : undefined
-            const checkIfUserExist = await getUserBySocialId(facebookId, googleId);
+            const checkIfUserExist = await getUserBySocialId(facebookId, googleId, email);
             if (checkIfUserExist) {
                 const userJwt: string = jwt.sign(
                     {

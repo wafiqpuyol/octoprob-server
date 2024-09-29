@@ -10,6 +10,13 @@ export const userSchema = buildSchema(`#graphql
     type: String
   }
 
+  input SocialAuth {
+    username: String!
+    email: String!
+    socialId: String
+    type: String
+  }
+
   type User {
     id: Int
     username: String
@@ -48,7 +55,7 @@ export const userSchema = buildSchema(`#graphql
   type Mutation {
     loginUser(email: String!, password: String!): AuthResponse!
     registerUser(user: Auth!): AuthResponse!
-    authSocialUser(user: Auth!): AuthResponse!
+    authSocialUser(user: SocialAuth!): AuthResponse!
     logout: AuthLogoutResponse!
   }
 `);

@@ -61,13 +61,13 @@ export const getUserByUsernameAndEmail = (username: string, email: string): Prom
     }
 }
 
-export const getUserBySocialId = (facebookId: string | undefined, googleId: string | undefined): Promise<User | null> => {
+export const getUserBySocialId = (facebookId: string | undefined, googleId: string | undefined, email: string): Promise<User | null> => {
     try {
         const user = prisma.user.findFirst({
             where: {
                 OR: [
-                    { facebookId },
-                    { googleId }
+                    { facebookId, googleId },
+                    { email }
                 ]
             }
         })

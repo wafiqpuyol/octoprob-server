@@ -31,4 +31,3 @@ export interface IUserResponse {
     user: IUserDocument;
     notifications: INotificationDocument[];
 }
-
