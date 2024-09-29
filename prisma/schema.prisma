@@ -71,7 +71,7 @@ model HttpHeartbeat {
   status       Int
   code         Int     @default(0)
   message      String?
-  timestamp    BigInt
+  timestamp    DateTime
   reqHeaders   String?
   resHeaders   String?
   reqBody      String?
@@ -87,7 +87,7 @@ model MongoDBHeartbeat {
   status       Int
   code         Int     @default(0)
   message      String?
-  timestamp    BigInt
+  timestamp    DateTime
   responseTime Int     @default(0)
   connection   String?
 
@@ -100,7 +100,7 @@ model RedisHeartbeat {
   status       Int
   code         Int     @default(0)
   message      String?
-  timestamp    BigInt
+  timestamp    DateTime
   responseTime Int     @default(0)
   connection   String?
 
@@ -113,9 +113,25 @@ model TCPHeartbeat {
   status       Int
   code         Int     @default(0)
   message      String?
-  timestamp    BigInt
+  timestamp    DateTime
   responseTime Int     @default(0)
   connection   String?
 
   @@index([monitorId])
+}
+
+model SSLMonitor {
+  id             Int      @id @default(autoincrement())
+  notificationId Int
+  userId         Int
+  name           String
+  status         Int
+  active         Boolean  @default(true)
+  frequency      Int      @default(30)
+  alertThreshold Int      @default(1)
+  url            String?
+  info           String?
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
 }
