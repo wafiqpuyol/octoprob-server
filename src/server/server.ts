@@ -19,6 +19,9 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import customFormat from 'dayjs/plugin/customParseFormat';
+import { enableAutoRefreshJob, startMonitors, startSSLMonitors } from "@app/utils/common";
+import { WebSocketServer, Server as WSServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -29,16 +32,28 @@ export class SingletonServer {
     private app: Express;
     private httpServer: http.Server;
     private gqlServer: ApolloServer
+    private wsServer: WSServer;
 
     private constructor(app: Express) {
         this.app = app;
         this.httpServer = new http.Server(app);
+        this.wsServer = new WebSocketServer({ server: this.httpServer, path: '/graphql', perMessageDeflate: false });
         const schema: GraphQLSchema = makeExecutableSchema({ typeDefs: mergedSchema, resolvers });
+        const serverCleanup = useServer({ schema }, this.wsServer);
         this.gqlServer = new ApolloServer<AppContext | BaseContext>({
             schema,
             introspection: config.NODE_ENV !== 'production',
             plugins: [
                 ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
+                {
+                    async serverWillStart() {
+                        return {
+                            async drainServer() {
+                                await serverCleanup.dispose();
+                            }
+                        };
+                    }
+                },
                 config.NODE_ENV === 'production'
                     ? ApolloServerPluginLandingPageDisabled()
                     : ApolloServerPluginLandingPageLocalDefault({ embed: true })
@@ -57,6 +72,7 @@ export class SingletonServer {
     async start(): Promise<void> {
         await this.gqlServer.start();
         this.standardMiddleware(this.app)
+        this.webSocketConnection();
         this.startHttpServer()
     }
 
@@ -111,12 +127,22 @@ export class SingletonServer {
         });
     }
 
+    private webSocketConnection() {
+        this.wsServer.on('connection', (_ws: WebSocket, req: http.IncomingMessage) => {
+            if (req.headers && req.headers.cookie) {
+                enableAutoRefreshJob(req.headers.cookie);
+            }
+            console.log("ws connected");
+        });
+    }
 
     private async startHttpServer(): Promise<void> {
         try {
             const serverPort = parseInt(config.PORT) || 3000
             this.httpServer.listen(serverPort, () => {
                 console.info(`Server is running on port ${serverPort}`)
+                startMonitors();
+                startSSLMonitors()
             })
         } catch (error) {
             console.error("StartHttpServer() error: ", error)
