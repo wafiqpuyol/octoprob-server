@@ -1,5 +1,8 @@
 import { mergeTypeDefs } from '@graphql-tools/merge';
 import { userSchema } from "./user"
 import { notificationSchema } from "./notification"
+import { monitorSchema } from "./monitor"
+import { heartbeatSchema } from "./heartbeats"
+import { sslMonitorSchema } from "./ssl"
 
-export const mergedSchema = mergeTypeDefs([userSchema, notificationSchema])
+export const mergedSchema = mergeTypeDefs([userSchema, notificationSchema, monitorSchema, heartbeatSchema, sslMonitorSchema])

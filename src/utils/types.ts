@@ -1,1 +1,1 @@
-export { User, Notifications, PrismaClient } from "@prisma/client"
+export { User, Notifications, PrismaClient, Monitor, HttpHeartbeat } from "@prisma/client"
