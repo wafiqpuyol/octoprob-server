@@ -34,7 +34,7 @@ export const getSingleNotificationGroup = async (notificationId: number) => {
 
 export const getAllNotificationGroupByUserId = async (userId: number) => {
     try {
-        const user = await prisma.notifications.findMany({
+        const notifications = await prisma.notifications.findMany({
             where: {
                 userId
             },
@@ -43,7 +43,7 @@ export const getAllNotificationGroupByUserId = async (userId: number) => {
             }
         })
 
-        return user;
+        return notifications;
     } catch (error) {
         throw new Error(error);
     }
