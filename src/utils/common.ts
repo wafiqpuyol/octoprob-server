@@ -10,7 +10,7 @@ import { IAuthPayload } from "../interfaces/user.interface"
 import { pubSub } from "./index"
 import { IEmailLocals } from "@app/interfaces/notification.interface";
 import { IHeartbeat } from "@app/interfaces/heartbeat.interface";
-import { sendEmail } from "../server/email";
+import { sendEmail } from "./email";
 import { ISSLMonitorDocument } from "../interfaces/ssl.interface"
 import { getAllUsersActiveSSLMonitors, sslStatusMonitor, getSSLMonitorById } from "../services/ssl.service"
 
